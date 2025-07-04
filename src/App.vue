@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <form class="form-container">
+  <div id="app" :class="{'dark-mode': darkmode}">
+    <form class="form-container" @submit.prevent="onSubmit">
       <div class="form-group">
         <label for="name">Nome:</label>
         <input id="name" v-model="name" placeholder="Escreva seu nome" :class="{'input-warning': name.trim() === ''}" />
@@ -48,6 +48,9 @@
         Preencha todos os campos obrigatórios para ativar o perfil.
       </div>
       <button type="submit">Enviar</button>
+      <button type="button" class="btn-darkmode" @click="darkmode = !darkmode">
+        {{ darkmode ? 'Tema Claro' : 'Tema Escuro' }}
+      </button>
     </form>
   </div>
 </template>
@@ -69,7 +72,8 @@ export default {
       hobGames: false,
       hobRead: false,
       hobProgramming: false,
-      address: ''
+      address: '',
+      darkmode: false
     };
   },
   computed: {
@@ -82,7 +86,7 @@ export default {
         this.selectedOption !== '' &&
         this.history.trim() !== '' &&
         (this.hobGames || this.hobRead || this.hobProgramming) &&
-        this.isActive !== false &&
+        //this.isActive !== false &&
         this.address.trim() !== ''
       );
     },
@@ -100,6 +104,24 @@ export default {
     }
   },
   methods:{
+    onSubmit(){
+      if (this.canActivate) {
+        alert('Perfil ativado com sucesso!');
+        this.name = '';
+        this.age = null;
+        this.email = '';
+        this.cep = '';
+        this.selectedOption = '';
+        this.history = '';
+        this.hobGames = false;
+        this.hobRead = false;
+        this.hobProgramming = false;
+        this.address = '';
+        this.isActive = false;
+      } else {
+        alert('Preencha todos os campos obrigatórios.');
+      }
+    },
     formatarCep(event) {
       let v = event.target.value.replace(/\D/g, ''); // Remove tudo que não for dígito
       if (v.length > 5) v = v.replace(/^(\d{5})(\d)/, '$1-$2');
@@ -193,7 +215,8 @@ export default {
   margin-right: 12px;
   font-size: smaller;
 }
-button[type="submit"] {
+button[type="submit"],
+button[type="button"].btn-darkmode {
   background: #2c3e50;
   color: #fff;
   border: none;
@@ -204,7 +227,8 @@ button[type="submit"] {
   margin-top: 10px;
   transition: background 0.2s;
 }
-button[type="submit"]:hover {
+button[type="submit"]:hover,
+button[type="button"].btn-darkmode:hover {
   background: #1a232c;
 }
 .alert-warning {
@@ -238,5 +262,20 @@ button[type="submit"]:hover {
   padding: 6px 10px;
   margin-top: 6px;
   font-size: 0.95em;
+}
+.dark-mode {
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+}
+.dark-mode .form-container {
+  background: #1e1e1e !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.25) !important;
+}
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+  background: #2a2a2a !important;
+  color: #e0e0e0 !important;
+  border: 1.5px solid #444 !important;
 }
 </style>
